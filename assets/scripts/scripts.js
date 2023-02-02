@@ -8,16 +8,21 @@ function getWeather (location) {
 }
 
 function updateWeather(data) {
+    console.log(data);
+    if (data.message) {
+        alert(data.message);
+        return;
+    } 
+
     const name = data.name;
     const { description, icon } = data.weather[0];
     const { temp, temp_min, temp_max, humidity } = data.main;
     const { speed, deg } = data.wind;
-    console.log(data);
     document.querySelector(".location").innerText = name;
-    document.querySelector(".temperature").innerText = `${temp}°C (${temp_max}, ${temp_min})`;
+    document.querySelector(".temperature").innerText = `${temp}°C (${temp_min}, ${temp_max})`;
     document.querySelector(".description").innerText = description;
-    document.querySelector(".humidity").innerText = humidity;
-    document.querySelector(".wind").innerText = speed;
+    document.querySelector(".humidity span").innerText = humidity + "%";
+    document.querySelector(".wind span").innerText = speed;
     document.querySelector(".icon").src = `http://openweathermap.org/img/wn/${icon}@2x.png`;
     const img = new Image;
     img.src = `https://source.unsplash.com/1600x1050/?${name}`;
@@ -26,6 +31,9 @@ function updateWeather(data) {
     } else {
         img.onload = loadImage;
     }
+    document.querySelector(".weather").classList.remove("invisible");
+    // document.querySelector(".forecast").classList.remove("hide");
+
     function loadImage() {
         document.body.style.backgroundImage = `url(${img.src})`;
     }
