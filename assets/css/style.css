@@ -22,12 +22,17 @@ body {
     background-image: url(../images/bg-initial.jpg);
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: rgb(121, 139, 139);
+    background-color: white;
     font-size: 1.4rem;
     transition: background-image 0.7s linear;
-    padding: 1rem;
-
 }
+
+/* body::after {
+    position: absolute;
+    inset: 0;
+    background: black;
+    content: url(https://source.unsplash.com/1600x1050/?london+landscape);
+} */
 
 .initial {
     visibility: hidden;
@@ -39,15 +44,8 @@ body {
 
 .invisible {
     opacity: 0;
-    margin-bottom: -116%;
+    margin-bottom: -114.5%;
 }
-
-/* body::after {
-    position: absolute;
-    inset: 0;
-    background: black;
-    content: url(https://source.unsplash.com/1600x1050/?london+landscape);
-} */
 
 .app {
     max-width: 100rem;
