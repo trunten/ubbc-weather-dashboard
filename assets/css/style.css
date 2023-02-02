@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+:root {
+    --ff: 'Varela Round', sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    position: relative;
+    margin: 0;
+    display: grid;
+    place-content: center;
+    min-height: 100vh;
+    font-family: var(--ff);
+    background-image: url(https://source.unsplash.com/1600x1050/?london+landscape);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: azure;
+    font-size: 1.4rem;
+}
+
+/* body::after {
+    position: absolute;
+    inset: 0;
+    background: black;
+    content: url(https://source.unsplash.com/1600x1050/?london+landscape);
+} */
+
+.app {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 3rem;
+}
+
+.main, .card {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 3rem;
+    border-radius: 0.3rem;
+}

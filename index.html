@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Weather dashboard">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="shortcut icon" href="./assets/images/favicon.png" type="image/x-icon">
+    <title>Weather Dashboard</title>
+</head>
+<body>
+    <div class="app">
+        <div class="main">
+            <div class="search-fields">
+                <input type="text" placeholder="Search">
+                <button class="search"></button>
+            </div>
+            <h1 class="location">Tamworth</h1>
+            <h2 class="temperature">12°C</h2>
+            <p class="description">Description</p>
+            <img src="http://openweathermap.org/img/wn/02n@2x.png" alt="weather conditions" class="icon">
+            <p class="humidity">Humidity: <span>87%</span></p>
+            <p class="wind">Wind Speed: <span>2 km/h</span></p>
+        </div>
+        <div class="forecast">
+            <div class="card day1"></div>
+            <div class="card day2"></div>
+            <div class="card day3"></div>
+            <div class="card day4"></div>
+            <div class="card day5"></div>
+        </div>
+    </div>
+
+    <script src="./assets/scripts/scripts.js"></script>
+</body>
+</html>
