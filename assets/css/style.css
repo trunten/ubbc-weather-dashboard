@@ -22,8 +22,9 @@ body {
     background-image: url(https://source.unsplash.com/1600x1050/?london+landscape);
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: azure;
+    background-color: rgb(121, 139, 139);
     font-size: 1.4rem;
+    transition: background-image 0.7s linear;
 }
 
 /* body::after {
@@ -41,9 +42,54 @@ body {
     padding: 3rem;
 }
 
+.search {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 100vmax;
+    padding: 1rem 1.5rem 1rem 1.6em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem
+}
+
+.search input {
+    color: white;
+    background: none;
+    outline: none;
+    border: none;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.6);
+    font-size: 1.6rem;
+    font-family: var(--ff);
+}
+
+.search button {
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    padding-top: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+@media (hover:hover) {
+    .search button:hover {
+        background-color: rgba(255, 255, 255, 0.7);
+    }
+}
+
 .main, .card {
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 3rem;
     border-radius: 0.3rem;
+}
+
+.weather {
+    padding-inline: 1rem;
+}
+
+.description {
+    text-transform: capitalize;
 }
