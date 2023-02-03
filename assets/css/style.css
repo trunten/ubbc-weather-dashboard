@@ -27,7 +27,7 @@ body {
     background-color: white;
     font-size: 1.6rem;
     transition: background-image 0.7s linear;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -55,7 +55,6 @@ p {
 .invisible .weather {
     opacity: 0;
     margin-bottom: -85%;
-    /* margin-bottom: -101%; */
 }
 
 .invisible .main {
@@ -66,7 +65,9 @@ p {
     opacity: 0;
     color: transparent;
     background-color: transparent;
-    display: none;
+    margin-bottom: -85%;
+    flex: 1 1 1000px;
+    /* display: none; */
 }
 
 .app {
@@ -78,7 +79,7 @@ p {
     background-color: rgba(0, 0, 0, 0.3);
     padding: 1rem;
     border-radius: 0.5rem;
-    transition: all 1.2s ease;
+    transition: background-color 1.2s ease 1.2s;
     margin-inline: 0.5rem;
 }
 
@@ -137,7 +138,7 @@ p {
 
 .weather {
     padding-inline: 1rem;
-    transition: margin 0.8s ease, opacity 1s linear 0.8s;
+    transition: all 0.5s ease-in-out, opacity 0.5s linear 0.5s;
 }
 
 .weather-group {
@@ -165,10 +166,9 @@ img {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    transition: all 0.8s ease;
 }
 
 .forecast > div {
-    max-width: 460px;
+    max-width: 280px;
     flex-grow: 1;
 }
