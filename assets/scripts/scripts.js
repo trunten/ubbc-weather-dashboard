@@ -32,9 +32,7 @@ function updateWeather(data) {
         img.onload = loadImage;
     }
     document.querySelector(".app").classList.remove("invisible");
-    document.querySelector(".start").classList.add("invisible");
-    document.querySelector(".weather").classList.remove("invisible");
-    setTimeout(function() {document.querySelector(".forecast").classList.remove("invisible");}, 100);
+    setTimeout(function() {document.querySelector(".forecast").classList.remove("invisible");}, 500);
 
     function loadImage() {
         document.body.style.backgroundImage = `url(${img.src})`;

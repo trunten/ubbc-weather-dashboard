@@ -41,11 +41,10 @@ body {
 
 .app.invisible {
     background-color: transparent;
-    /* transform: translateX(4rem); */
-    opacity: 0;
+    /* opacity: 0; */
 }
 
-/* .invisible .weather {
+.invisible .weather {
     opacity: 0;
     margin-bottom: -125%;
 }
@@ -54,13 +53,19 @@ body {
     padding: 10px 10px;
 }
 
-.invisible.forecast, .invisible.card {
+.invisible.forecast, .invisible.forecast .card {
     color: transparent;
     background-color: transparent;
     padding: 0;
-} */
+    height: 0;
+    width: 0;
+}
 
-.start {
+.start  {
+    display: none;
+}
+
+/* .start {
     background-color: rgba(255, 255, 255, 0.7);
     padding: 1.5rem 2rem 1.5rem 3rem;
     display: flex;
@@ -96,7 +101,7 @@ body {
     background-color: rgba(255, 255, 255, 0.4);
     color: black;
     cursor: pointer;
-}
+} */
 
 .app {
     max-width: 100rem;
