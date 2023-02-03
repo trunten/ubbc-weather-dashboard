@@ -19,7 +19,7 @@ function updateWeather(data) {
     const { temp, temp_min, temp_max, humidity } = data.main;
     const { speed, deg } = data.wind;
     document.querySelector(".location").innerText = name;
-    document.querySelector(".temperature").innerText = `${temp}°C`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature").innerText = `${temp.toFixed(1)}°C`; //(${temp_min}, ${temp_max})`;
     document.querySelector(".description").innerText = description;
     document.querySelector(".humidity span").innerText = humidity;
     document.querySelector(".wind span").innerText = speed;
@@ -32,7 +32,7 @@ function updateWeather(data) {
         img.onload = loadImage;
     }
     document.querySelector(".app").classList.remove("invisible");
-    setTimeout(function() {document.querySelector(".forecast").classList.remove("invisible");}, 500);
+    setTimeout(function() {document.querySelector(".forecast").classList.remove("invisible");}, 1800);
 
     function loadImage() {
         document.body.style.backgroundImage = `url(${img.src})`;
@@ -48,15 +48,4 @@ function search(e) {
 document.querySelector(".search button").addEventListener("click", search);
 document.querySelector(".search input").addEventListener("keyup", function(e) {
     if (e.key === "Enter") { search(e); }
-});
-
-document.querySelector(".start input").addEventListener("keyup", function(e) {
-    if (e.key === "Enter") { 
-        document.querySelector(".search input").value = this.value || "London";
-        search(e);
-     }
-});
-document.querySelector(".start button").addEventListener("click", function(e) {
-        document.querySelector(".search input").value = this.value || "London";
-        search(e); 
 });
