@@ -49,7 +49,7 @@ p {
 }
 
 .invisible {
-    background-color: transparent !important;
+    /* background-color: transparent !important; */
 }
 
 .invisible .weather {
@@ -67,7 +67,6 @@ p {
     background-color: transparent;
     margin-bottom: -85%;
     flex: 1 1 1000px;
-    /* display: none; */
 }
 
 .app {
@@ -79,7 +78,6 @@ p {
     background-color: rgba(0, 0, 0, 0.3);
     padding: 1rem;
     border-radius: 0.5rem;
-    transition: background-color 1.2s ease 1.2s;
     margin-inline: 0.5rem;
 }
 
