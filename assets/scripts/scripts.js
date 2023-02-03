@@ -31,9 +31,10 @@ function updateWeather(data) {
     } else {
         img.onload = loadImage;
     }
-    document.querySelector(".app").classList.remove("initial");
+    document.querySelector(".app").classList.remove("invisible");
+    document.querySelector(".start").classList.add("invisible");
     document.querySelector(".weather").classList.remove("invisible");
-    // setTimeout(function() {document.querySelector(".forecast").classList.remove("invisible");}, 2000);
+    setTimeout(function() {document.querySelector(".forecast").classList.remove("invisible");}, 100);
 
     function loadImage() {
         document.body.style.backgroundImage = `url(${img.src})`;
@@ -49,4 +50,15 @@ function search(e) {
 document.querySelector(".search button").addEventListener("click", search);
 document.querySelector(".search input").addEventListener("keyup", function(e) {
     if (e.key === "Enter") { search(e); }
+});
+
+document.querySelector(".start input").addEventListener("keyup", function(e) {
+    if (e.key === "Enter") { 
+        document.querySelector(".search input").value = this.value || "London";
+        search(e);
+     }
+});
+document.querySelector(".start button").addEventListener("click", function(e) {
+        document.querySelector(".search input").value = this.value || "London";
+        search(e); 
 });
