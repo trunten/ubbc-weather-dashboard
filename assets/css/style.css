@@ -49,16 +49,16 @@ p {
 }
 
 .invisible {
-    /* background-color: transparent !important; */
+    background-color: transparent !important;
+}
+
+.invisible .main {
+    padding: 10px 10px;
 }
 
 .invisible .weather {
     opacity: 0;
     margin-bottom: -85%;
-}
-
-.invisible .main {
-    padding: 10px 10px;
 }
 
 .invisible.forecast, .invisible.forecast .card {
@@ -79,11 +79,12 @@ p {
     padding: 1rem;
     border-radius: 0.5rem;
     margin-inline: 0.5rem;
+    transition: background-color 0.5s linear 0.5s
 }
 
 .search {
     visibility: visible;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.3);
     border-radius: 100vmax;
     padding: 1rem 1.5rem 1rem 1.6em;
     display: flex;
@@ -99,12 +100,16 @@ p {
     outline: none;
     border: none;
     padding-bottom: 0.3rem;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.6);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.5);
     font-size: 1.6rem;
     font-family: var(--ff);
     border-radius: 0;
-    flex: 1 1 2.9rem;
+    flex: 1 1;
     min-width: 10px
+}
+
+.search input::placeholder{
+    color: lightgrey;
 }
 
 .search button {
