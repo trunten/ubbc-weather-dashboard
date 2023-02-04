@@ -1,9 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap'); */
 
 :root {
-    --ff: 'Varela Round', sans-serif;
+    /* --ff: 'Varela Round', sans-serif; */
     /* --ff: 'Open Sans', sans-serif; */
+    /* --ff: 'DM Sans', sans-serif; */
+    --ff: 'Montserrat', sans-serif;
+    /* --ff: 'Inter', sans-serif; */
 }
 
 *, *::before, *::after {
@@ -15,7 +21,7 @@ html {
 }
 
 body {
-    position: relative;
+    /* position: relative; */
     margin: 0;
     display: grid;
     place-content: center;
@@ -24,65 +30,76 @@ body {
     background-image: url(../images/bg-initial.jpg);
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: 0% 80%;
     background-color: white;
     font-size: 1.6rem;
     transition: background-image 0.7s linear;
     overflow-x: hidden;
+    padding-bottom: 10rem;
 }
 
 h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0;
+    font-size: 5rem;
+    font-weight: 400;
+    margin: 2rem 0 1.5rem ;
 }
 
 h2 {
-    font-size: 4.5rem;
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+    font-weight: 300;
+    color: grey;
+}
+
+h3 {
+    font-size: 5rem;
+    margin: 0;
+    font-weight: 600;
 }
 
 p {
-    margin-block: 1rem;
+    margin-block: 0.7rem;
+}
+
+.muted {
+    color: rgb(195, 195, 195);
 }
 
 .hide {
     display: none !important;
 }
 
-.invisible {
-    background-color: transparent !important;
+.app.invisible {
+    visibility: hidden;
 }
 
-.invisible .main {
-    padding: 10px 10px;
-}
-
-.invisible .weather {
-    opacity: 0;
-    margin-bottom: -85%;
-}
-
-.invisible.forecast, .invisible.forecast .card {
-    opacity: 0;
-    color: transparent;
-    background-color: transparent;
-    margin-bottom: -85%;
-    flex: 1 1 1000px;
+.app.invisible .search {
+    visibility: visible;
+    background-color: rgba(0, 0, 0, 0.645);
 }
 
 .app {
     max-width: 150rem;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     justify-content: center;
     gap: 2rem;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.4);
     padding: 1rem;
     border-radius: 0.5rem;
-    margin-inline: 0.5rem;
-    transition: background-color 0.5s linear 0.5s
+    margin: 0.5rem;
+    /* transition: all 1s ease; */
+}
+
+.app.visible {
+    animation:forwards 3s fadeIn;
+}
+
+@keyframes fadeIn {
+    0% {opacity: 0.1;}
+    100% {opacity: 1;}
 }
 
 .search {
-    visibility: visible;
     background-color: rgba(255, 255, 255, 0.3);
     border-radius: 100vmax;
     padding: 1rem 1.5rem 1rem 1.6em;
@@ -91,6 +108,7 @@ p {
     justify-content: center;
     gap: 1.5rem;
     flex-wrap: wrap;
+    /* transition: all 1s ease; */
 }
 
 .search input {
@@ -105,10 +123,6 @@ p {
     border-radius: 0;
     flex: 1 1;
     min-width: 10px
-}
-
-.search input::placeholder{
-    color: lightgrey;
 }
 
 .search button {
@@ -135,31 +149,55 @@ p {
     color: white;
     padding: 2rem;
     border-radius: 0.5rem;
-    transition: all 0.8s ease;
 }
 
-.weather {
+.main-body {
     padding-inline: 1rem;
-    transition: all 0.5s ease-in-out, opacity 0.5s linear 0.5s;
+    display: grid;
+    column-gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    /* justify-content: space-between */
 }
 
-.weather-group {
-    display: flex;
-    flex-wrap: wrap;
+.main-body img {
+    margin: -22px -15px;
 }
 
-.temperature {
-    align-self: flex-end;
-}
-
-img {
-    align-self: flex-start;
-    transform: translateY(-1rem);
+.location {
+    grid-column: 1 / -1;
 }
 
 .description {
     text-transform: capitalize;
-    display: none;
+}
+
+.wind > div {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+}
+
+.wind-direction {
+    height: 6rem;
+    width: 6rem;
+    background-color: rgba(255, 255, 255, 0.5);;
+    border-radius: 50%;
+    position: relative;
+    display: grid;
+    justify-items: center;
+}
+
+.wind-direction-arrow {
+    --direction: 0deg;
+    margin: .5rem;
+    height: 2.5rem;
+    width: 1rem;
+    background-color: #343434;
+    transform-origin: bottom;
+    transform: rotate(var(--direction));
+    clip-path: polygon(0 100%, 50% 0, 100% 100%);
+    transition: transform 400ms linear;
 }
 
 .forecast {
@@ -170,7 +208,96 @@ img {
     gap: 1rem;
 }
 
-.forecast > div {
-    max-width: 280px;
+.card {
+    width: 200px;
     flex-grow: 1;
+}
+
+.card img {
+    margin: -10px;
+}
+
+.forecast::after {
+    content: "";
+    flex: 0 0 600px;
+}
+
+.history {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    text-align: center;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    transform: translateY(calc(100% - 6rem));
+    box-shadow: inset 0px 10px 20px -10px rgba(0,0,0,0.75);
+    transition: transform 600ms ease-in-out;
+}
+
+.history > button {
+    cursor: pointer;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    position: absolute;
+    left: 50%;
+    top: 0%;
+    translate: -50% -90%;
+    transform-origin: center;
+    transform: rotate(0deg);
+    transition: transform 250ms ease;
+}
+
+.history > h2 {
+    cursor: pointer;
+}
+
+.searches > a {
+    display: block;
+    line-height: 3rem;
+    text-decoration: none;
+    color: rgb(23, 102, 172);
+}
+
+.searches > a:hover {
+    color: rgb(172, 23, 23);
+}
+
+.history.expanded {
+    transform: translateY(0%);
+}
+
+.history.expanded > button {
+    transform: rotate(180deg);
+}
+
+
+@media screen and (max-width:600px) {
+    .main-body {
+        grid-template-columns: 1fr 1fr;
+        row-gap: 2rem;
+    }
+
+    h1 {
+        margin: 1.5rem 0 0 ;
+        font-size: 3rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+        margin: 0.5rem 0;
+    }
+
+    .wind {
+        grid-column: 1 / -1;
+    }
+}
+
+@media screen and (max-width:350px) {
+    .main-body {
+        grid-template-columns: 1fr;
+        row-gap: 2rem;
+    }
 }

@@ -1,4 +1,5 @@
 const apiKey = "9360e4432a25de1431e1a190bc4aca95";
+let history = JSON.parse(localStorage.getItem("searches")) || [];
 
 function getWeather (location) {
     const url = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${location}&appid=${apiKey}`
@@ -15,24 +16,29 @@ function updateWeather(data) {
     } 
 
     const name = data.name;
+    addToSearchHistory(name);
     const { description, icon } = data.weather[0];
     const { temp, temp_min, temp_max, humidity } = data.main;
     const { speed, deg } = data.wind;
     document.querySelector(".location").innerText = name;
-    document.querySelector(".temperature").innerText = `${temp.toFixed(1)}°C`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-current").innerText = `${temp.toFixed(1)}°C`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-max span").innerText = `${temp_max.toFixed(1)}°C`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-min span").innerText = `${temp_min.toFixed(1)}°C`; //(${temp_min}, ${temp_max})`;
     document.querySelector(".description").innerText = description;
     document.querySelector(".humidity span").innerText = humidity;
-    document.querySelector(".wind span").innerText = speed;
+    document.querySelector(".wind-speed span").innerText = speed;
+    document.querySelector(".wind-direction-arrow").style.setProperty('--direction', deg + "deg")
     document.querySelector(".icon").src = `http://openweathermap.org/img/wn/${icon}@2x.png`;
     const img = new Image;
-    img.src = `https://source.unsplash.com/1600x1050/?${name}`;
+    const dayNight = icon.slice(-1)==="d" ? "" : ",night";
+    img.src = `https://source.unsplash.com/1600x1050/?${name}${dayNight}`;
     if (img.complete || img.height > 0) {
         loadImage();
     } else {
         img.onload = loadImage;
     }
+    document.querySelector(".app").classList.add("visible");
     document.querySelector(".app").classList.remove("invisible");
-    setTimeout(function() {document.querySelector(".forecast").classList.remove("invisible");}, 600);
 
     function loadImage() {
         document.body.style.backgroundImage = `url(${img.src})`;
@@ -41,11 +47,45 @@ function updateWeather(data) {
 
 function search(e) {
     if (e) { e.preventDefault(); }
+    document.querySelector(".history").classList.remove("expanded");
     let location = document.querySelector(".search input").value.trim() || "london";
     if (location) { getWeather(location) }
 }
 
+function addToSearchHistory(name) {
+    if (name && name.trim() && !history.includes(name)) {
+        history.push(name)
+        if (history.length > 10) {
+            history.shift();
+        }
+        localStorage.setItem("searches", JSON.stringify(history))
+    }
+    renderSearchHistory();
+}
+
+function renderSearchHistory() {
+    const searches = document.querySelector(".searches");
+    searches.textContent = "";
+    for (let location of history) {
+        const a = document.createElement("a")
+        a.href = "#";
+        a.textContent = location;
+        a.dataset.location = location;
+        searches.appendChild(a);
+    }
+}
+
+renderSearchHistory();
+
 document.querySelector(".search button").addEventListener("click", search);
 document.querySelector(".search input").addEventListener("keyup", function(e) {
     if (e.key === "Enter") { search(e); }
+});
+
+document.querySelector(".history").addEventListener("click", function(e) {
+    document.querySelector(".history").classList.toggle("expanded");
+    if (e.target.dataset.location) {
+        document.querySelector(".search input").value = e.target.dataset.location
+        search(e);
+    }
 });
