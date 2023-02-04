@@ -296,7 +296,7 @@ p {
     }
 }
 
-@media screen and (max-width:350px) {
+@media screen and (max-width:380px) {
     .main-body {
         grid-template-columns: 1fr;
         row-gap: 2rem;
