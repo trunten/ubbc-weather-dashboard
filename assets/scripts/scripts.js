@@ -91,11 +91,6 @@ function updateForecast() {
         day.querySelector(`.humidity span`).textContent = day.dataset.humidity;
         day.querySelector(`.wind span`).textContent = day.dataset.wind;
     }
-
-    document.querySelector(`.day${(i+1)} .date`).textContent = dt.toLocaleDateString();
-            document.querySelector(`.day${(i+1)} .temp span`).textContent = day.main.temp;
-            document.querySelector(`.day${(i+1)} .humidity span`).textContent = day.main.humidity;
-            document.querySelector(`.day${(i+1)} .wind span`).textContent = day.wind.speed;
 }
 
 function search(e) {
