@@ -32,7 +32,7 @@ function parseWeather(data) {
     document.querySelector(".icon").src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
     const dayNight = icon.slice(-1)==="d" ? "daytime" : ",nighttime";
 
-    const url = `http://api.openweathermap.org/data/2.5/forecast?units=metric&lat=${lat}&lon=${lon}&appid=${apiKey}`
+    const url = `https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=${lat}&lon=${lon}&appid=${apiKey}`
     fetch(url).then(res => res.json()).then(data => {
         forecast = data.list.filter(item => item.dt_txt.includes("12:00"));
         for (let i = 0; i < forecast.length; i++) {
@@ -85,7 +85,7 @@ function parseWeather(data) {
 function updateForecast() {
     const forecast = document.querySelectorAll(".forecast .card");
     for (let day of forecast) {
-        console.log(day);
+        // console.log(day);
         day.querySelector(`.date`).textContent = day.dataset.date;
         day.querySelector(`.temp span`).textContent = day.dataset.temp;
         day.querySelector(`.humidity span`).textContent = day.dataset.humidity;
