@@ -30,7 +30,6 @@ body {
     background-image: url(../images/bg-initial.jpg);
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: 0% 80%;
     background-color: white;
     font-size: 1.6rem;
     transition: background-image 0.7s linear;
@@ -248,8 +247,21 @@ p {
     transition: transform 250ms ease;
 }
 
+.history > button > svg {
+    fill: rgba(255, 255, 255, 0.95);
+}
+
 .history > h2 {
     cursor: pointer;
+}
+
+.history.expanded {
+    transform: translateY(0%);
+}
+
+.history.expanded > button {
+    transform: rotate(180deg);
+    translate: -50% -100%;
 }
 
 .searches > a {
@@ -262,15 +274,6 @@ p {
 .searches > a:hover {
     color: rgb(172, 23, 23);
 }
-
-.history.expanded {
-    transform: translateY(0%);
-}
-
-.history.expanded > button {
-    transform: rotate(180deg);
-}
-
 
 @media screen and (max-width:600px) {
     .main-body {
