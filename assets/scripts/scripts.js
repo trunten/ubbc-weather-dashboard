@@ -7,10 +7,10 @@ function getWeather (location) {
     const url = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${location}&appid=${apiKey}`
     fetch(url)
         .then(res => res.json())
-        .then(data => updateWeather(data));
+        .then(data => parseWeather(data));
 }
 
-function updateWeather(data) {
+function parseWeather(data) {
     if (data.message) {
         alert(data.message);
         return;
@@ -37,23 +37,25 @@ function updateWeather(data) {
         forecast = data.list.filter(item => item.dt_txt.includes("12:00"));
         for (let i = 0; i < forecast.length; i++) {
             const day = forecast[i];
-            const el = document.querySelector(".day" + i);
-            console.log(day, el);
+            const el = document.querySelector(".day" + (i + 1));
             let dt = new Date(day.dt * 1000);
-            console.log(dt.toLocaleDateString("en-gb", { weekday:"short", day:"numeric", month:"short"}));
-            document.querySelector(`.day${(i+1)} .date`).textContent = dt.toLocaleDateString();
-            document.querySelector(`.day${(i+1)} .temp span`).textContent = day.main.temp;
-            document.querySelector(`.day${(i+1)} .humidity span`).textContent = day.main.humidity;
-            document.querySelector(`.day${(i+1)} .wind span`).textContent = day.wind.speed;
+            // console.log(dt.toLocaleDateString("en-gb", { weekday:"short", day:"numeric", month:"short"}));
+            el.dataset.date = dt.toLocaleDateString();
+            el.dataset.temp = day.main.temp;
+            el.dataset.humidity = day.main.humidity;
+            el.dataset.wind = day.wind.speed;
         }
+        updateForecast();
     });
+
     
+    // background image
     fetch (`https://api.unsplash.com/search/photos?client_id=${unsplashId}&page=1&per_page=40&orientation=landscape&query=${name.replaceAll(" ",",")},${dayNight}`)
     .then(res => res.json())
     .then(data => {
         if (!data.errors) {
             const img = new Image;
-            const results = data.results //.filter(item => item.height > 3500);
+            const results = data.results;
             updateBG();
 
             function updateBG() {
@@ -78,6 +80,22 @@ function updateWeather(data) {
 
     document.querySelector(".app").classList.add("visible");
     document.querySelector(".app").classList.remove("invisible");
+}
+
+function updateForecast() {
+    const forecast = document.querySelectorAll(".forecast .card");
+    for (let day of forecast) {
+        console.log(day);
+        day.querySelector(`.date`).textContent = day.dataset.date;
+        day.querySelector(`.temp span`).textContent = day.dataset.temp;
+        day.querySelector(`.humidity span`).textContent = day.dataset.humidity;
+        day.querySelector(`.wind span`).textContent = day.dataset.wind;
+    }
+
+    document.querySelector(`.day${(i+1)} .date`).textContent = dt.toLocaleDateString();
+            document.querySelector(`.day${(i+1)} .temp span`).textContent = day.main.temp;
+            document.querySelector(`.day${(i+1)} .humidity span`).textContent = day.main.humidity;
+            document.querySelector(`.day${(i+1)} .wind span`).textContent = day.wind.speed;
 }
 
 function search(e) {
