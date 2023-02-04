@@ -1,4 +1,5 @@
 const apiKey = "9360e4432a25de1431e1a190bc4aca95";
+const unsplashId = "_5uHOtETr7A0g87rXm5bnFFv8z-frUbW5u3Q9d8qeAk";
 let history = JSON.parse(localStorage.getItem("searches")) || [];
 
 function getWeather (location) {
@@ -9,7 +10,7 @@ function getWeather (location) {
 }
 
 function updateWeather(data) {
-    console.log(data);
+    // console.log(data);
     if (data.message) {
         alert(data.message);
         return;
@@ -28,21 +29,39 @@ function updateWeather(data) {
     document.querySelector(".humidity span").innerText = humidity;
     document.querySelector(".wind-speed span").innerText = speed;
     document.querySelector(".wind-direction-arrow").style.setProperty('--direction', deg + "deg")
-    document.querySelector(".icon").src = `http://openweathermap.org/img/wn/${icon}@2x.png`;
-    const img = new Image;
-    const dayNight = icon.slice(-1)==="d" ? "" : ",night";
-    img.src = `https://source.unsplash.com/1600x1050/?${name}${dayNight}`;
-    if (img.complete || img.height > 0) {
-        loadImage();
-    } else {
-        img.onload = loadImage;
-    }
+    document.querySelector(".icon").src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+    const dayNight = icon.slice(-1)==="d" ? "daytime" : ",nighttime";
+    
+    fetch (`https://api.unsplash.com/search/photos?client_id=${unsplashId}&page=1&per_page=40&orientation=landscape&query=${name.replaceAll(" ",",")},${dayNight}`)
+    .then(res => res.json())
+    .then(data => {
+        if (!data.errors) {
+            const img = new Image;
+            const results = data.results //.filter(item => item.height > 3500);
+            updateBG();
+
+            function updateBG() {
+                const src = results[Math.floor(Math.random() * results.length)].urls.regular;
+                img.src = src;
+                if (img.complete || img.height > 0) {
+                    loadImage();
+                } else {
+                    img.onload = loadImage;
+                }
+            }
+
+            function loadImage() {
+                if ((img.width/img.height) == 1.5) {
+                    document.body.style.backgroundImage = `url(${img.src})`;    
+                } else {
+                    updateBG();
+                }
+            }
+        }
+    })
+
     document.querySelector(".app").classList.add("visible");
     document.querySelector(".app").classList.remove("invisible");
-
-    function loadImage() {
-        document.body.style.backgroundImage = `url(${img.src})`;
-    }
 }
 
 function search(e) {
@@ -54,9 +73,9 @@ function search(e) {
 
 function addToSearchHistory(name) {
     if (name && name.trim() && !history.includes(name)) {
-        history.push(name)
+        history.unshift(name)
         if (history.length > 10) {
-            history.shift();
+            history.pop();
         }
         localStorage.setItem("searches", JSON.stringify(history))
     }

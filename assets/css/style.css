@@ -21,16 +21,15 @@ html {
 }
 
 body {
-    /* position: relative; */
     margin: 0;
     display: grid;
     place-content: center;
     min-height: 100vh;
     font-family: var(--ff);
-    background-image: url(../images/bg-initial.jpg);
+    background-image: url(../images/bg-initial-3.jpg);
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: white;
+    background-color: whitesmoke;
     font-size: 1.6rem;
     transition: background-image 0.7s linear;
     overflow-x: hidden;
@@ -245,10 +244,13 @@ p {
     transform-origin: center;
     transform: rotate(0deg);
     transition: transform 250ms ease;
+    isolation: isolate;
 }
 
 .history > button > svg {
     fill: rgba(255, 255, 255, 0.95);
+    stroke: rgba(0, 0, 0, 0.4);
+    stroke-width: 0.5px;
 }
 
 .history > h2 {
