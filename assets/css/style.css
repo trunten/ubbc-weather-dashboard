@@ -39,7 +39,7 @@ body {
 h1 {
     font-size: 5rem;
     font-weight: 400;
-    margin: 2rem 0 1.5rem ;
+    margin: 2rem 0 0rem;
 }
 
 h2 {
@@ -60,7 +60,8 @@ p {
 }
 
 .muted {
-    color: rgb(195, 195, 195);
+    /* color: rgb(195, 195, 195); */
+    color: grey;
 }
 
 .hide {
@@ -88,7 +89,7 @@ p {
 }
 
 .app.visible {
-    animation:forwards 3s fadeIn;
+    animation:forwards 2s fadeIn;
 }
 
 @keyframes fadeIn {
@@ -140,7 +141,7 @@ p {
     }
 }
 
-.main, .card {
+.main, .forecast .card {
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 2rem;
@@ -160,8 +161,13 @@ p {
     margin: -22px -15px;
 }
 
-.location {
+.main-body-header {
     grid-column: 1 / -1;
+    margin-bottom: 1.5rem;
+}
+
+.main-body-header .date {
+    margin-left: 0.3rem;
 }
 
 .description {
@@ -255,7 +261,17 @@ p {
     gap: 1rem;
 }
 
-.card {
+.forecast h2 {
+    font-weight: 500;
+    font-size: 1.8rem;
+    color: white;
+}
+
+.forecast p {
+    font-size: 1.5rem;
+}
+
+.forecast .card {
     width: 200px;
     flex-grow: 1;
 }
