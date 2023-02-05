@@ -1,6 +1,9 @@
 const apiKey = "9360e4432a25de1431e1a190bc4aca95";
 const unsplashId = "_5uHOtETr7A0g87rXm5bnFFv8z-frUbW5u3Q9d8qeAk";
 let history = JSON.parse(localStorage.getItem("searches")) || [];
+if (history.length) {
+    if (!history[0].lat) history = [];
+}
 
 function getWeather (location) {
     const re = RegExp(location, "i");
@@ -134,7 +137,7 @@ function addToSearchHistory(name, lat, lon) {
         history.unshift(location)
         localStorage.setItem("searches", JSON.stringify(history))
     }
-    renderSearchHistory();
+    setTimeout(renderSearchHistory, 1000);
 }
 
 function renderSearchHistory() {
@@ -151,6 +154,8 @@ function renderSearchHistory() {
         searches.appendChild(a);
     }
 }
+
+//init 
 
 renderSearchHistory();
 
