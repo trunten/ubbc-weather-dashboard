@@ -3,11 +3,34 @@ const unsplashId = "_5uHOtETr7A0g87rXm5bnFFv8z-frUbW5u3Q9d8qeAk";
 let history = JSON.parse(localStorage.getItem("searches")) || [];
 
 function getWeather (location) {
-    // const url = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=${apiKey}`
-    const url = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${location}&appid=${apiKey}`
-    fetch(url)
-        .then(res => res.json())
-        .then(data => parseWeather(data));
+    const re = RegExp(location, "i");
+    const historyMatch = history.filter(loc => re.test(loc.name));
+    let url = "";
+    if (historyMatch.length) {
+        const { lat, lon } = historyMatch[0];
+        url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${lon}&appid=${apiKey}`
+        fetch(url).then(res => res.json()).then(data => parseWeather(data));
+    } else {
+        url = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=10&appid=${apiKey}`
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data.length) {
+                    const { lat, lon } = data[0]
+                    url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${lon}&appid=${apiKey}`
+                    fetch(url).then(res => res.json()).then(data => parseWeather(data));
+                } else {
+                    alert("Country/city not found");
+                }
+            });
+        // url = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${location}&appid=${apiKey}`
+        // fetch(url)
+        //     .then(res => res.json())
+        //     .then(data => parseWeather(data))
+        //     .catch(e => console.log(e));
+    }
+  
 }
 
 function parseWeather(data) {
@@ -16,15 +39,15 @@ function parseWeather(data) {
         return;
     } 
     const name = data.name;
-    addToSearchHistory(name);
     const { description, icon } = data.weather[0];
     const { temp, temp_min, temp_max, humidity } = data.main;
     const { speed, deg } = data.wind;
     const { lat, lon } = data.coord;
+    addToSearchHistory(name, lat, lon);
     document.querySelector(".location").innerText = name;
-    document.querySelector(".temperature-current").innerText = `${temp.toFixed(1)} °C`; //(${temp_min}, ${temp_max})`;
-    document.querySelector(".temperature-max span").innerText = `${temp_max.toFixed(1)} °C`; //(${temp_min}, ${temp_max})`;
-    document.querySelector(".temperature-min span").innerText = `${temp_min.toFixed(1)} °C`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-current span").innerText = `${temp.toFixed(1)}`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-max span").innerText = `${temp_max.toFixed(1)}`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-min span").innerText = `${temp_min.toFixed(1)}`; //(${temp_min}, ${temp_max})`;
     document.querySelector(".description").innerText = description;
     document.querySelector(".humidity span").innerText = humidity;
     document.querySelector(".wind-speed span").innerText = speed;
@@ -100,12 +123,15 @@ function search(e) {
     if (location) { getWeather(location) }
 }
 
-function addToSearchHistory(name) {
-    if (name && name.trim() && !history.includes(name)) {
-        history.unshift(name)
-        if (history.length > 10) {
-            history.pop();
-        }
+function addToSearchHistory(name, lat, lon) {
+    if (name && name.trim() && lat && lon) {
+        history.forEach((item, i) => {
+            if (item.name === name) {
+                history.splice(i,1);
+            }
+        })
+        const location = {name: name, lat: lat, lon: lon}
+        history.unshift(location)
         localStorage.setItem("searches", JSON.stringify(history))
     }
     renderSearchHistory();
@@ -117,8 +143,10 @@ function renderSearchHistory() {
     for (let location of history) {
         const a = document.createElement("a")
         a.href = "#";
-        a.textContent = location;
-        a.dataset.location = location;
+        a.textContent = location.name;
+        a.dataset.location = location.name;
+        // a.dataset.lat = location.lat;
+        // a.dataset.lon = location.lon;
         searches.appendChild(a);
     }
 }

@@ -317,6 +317,10 @@ p {
     translate: -50% -100%;
 }
 
+.searches {
+    margin-top: 1.5rem;
+}
+
 .searches > a {
     display: block;
     line-height: 3rem;
