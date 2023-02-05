@@ -140,7 +140,8 @@ function addToSearchHistory(name, lat, lon) {
 function renderSearchHistory() {
     const searches = document.querySelector(".searches");
     searches.textContent = "";
-    for (let location of history) {
+    for (let i = 0; i < Math.min(10, history.length); i++) {
+        const location = history[i];
         const a = document.createElement("a")
         a.href = "#";
         a.textContent = location.name;
