@@ -22,9 +22,9 @@ function parseWeather(data) {
     const { speed, deg } = data.wind;
     const { lat, lon } = data.coord;
     document.querySelector(".location").innerText = name;
-    document.querySelector(".temperature-current").innerText = `${temp.toFixed(1)}°C`; //(${temp_min}, ${temp_max})`;
-    document.querySelector(".temperature-max span").innerText = `${temp_max.toFixed(1)}°C`; //(${temp_min}, ${temp_max})`;
-    document.querySelector(".temperature-min span").innerText = `${temp_min.toFixed(1)}°C`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-current").innerText = `${temp.toFixed(1)} °C`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-max span").innerText = `${temp_max.toFixed(1)} °C`; //(${temp_min}, ${temp_max})`;
+    document.querySelector(".temperature-min span").innerText = `${temp_min.toFixed(1)} °C`; //(${temp_min}, ${temp_max})`;
     document.querySelector(".description").innerText = description;
     document.querySelector(".humidity span").innerText = humidity;
     document.querySelector(".wind-speed span").innerText = speed;
@@ -128,6 +128,16 @@ renderSearchHistory();
 document.querySelector(".search button").addEventListener("click", search);
 document.querySelector(".search input").addEventListener("keyup", function(e) {
     if (e.key === "Enter") { search(e); }
+});
+
+document.querySelector(".units-toggle").addEventListener("click", function() {
+    const cel = document.querySelector("#celcius");
+    const fah = document.querySelector("#fahrenheit");
+    if (cel.checked) {
+        fah.checked = true;
+    } else {
+        cel.checked = true;
+    }
 });
 
 document.querySelector(".history").addEventListener("click", function(e) {
