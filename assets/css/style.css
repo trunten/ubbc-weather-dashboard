@@ -180,7 +180,7 @@ p {
     align-items: center;
     position: absolute;
     top: 2rem;
-    right: 2rem;
+    right: 0.5rem;
     opacity: 0.7;
     transition: opacity 150ms linear;
 }
@@ -373,5 +373,10 @@ p {
     .main-body {
         grid-template-columns: 1fr;
         row-gap: 2rem;
+    }
+
+    h1 {
+        max-width: 20rem;
+        overflow-wrap: break-word;
     }
 }
