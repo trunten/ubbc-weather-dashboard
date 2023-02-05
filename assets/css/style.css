@@ -26,7 +26,7 @@ body {
     place-content: center;
     min-height: 100vh;
     font-family: var(--ff);
-    background-image: url(../images/bg-initial-3.jpg);
+    background-image: url(../images/bg-initial.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     background-color: whitesmoke;
