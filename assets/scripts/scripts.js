@@ -65,7 +65,7 @@ function parseWeather(data) {
     weather.dataset.icon = icon;
     updateCurrentWeather();
     
-
+    // 5 day forecast data from lat and lon of main location
     const url = `https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=${lat}&lon=${lon}&appid=${apiKey}`
     fetch(url).then(res => res.json()).then(data => {
         forecast = data.list.filter(item => item.dt_txt.includes("12:00"));
