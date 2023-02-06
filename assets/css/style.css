@@ -26,7 +26,8 @@ body {
     place-content: center;
     min-height: 100vh;
     font-family: var(--ff);
-    background-image: url(../images/bg-initial.jpg);
+    background-image: url(../images/bg-initial-5.jpg);
+    background-position: 50% 50%;
     background-size: cover;
     background-repeat: no-repeat;
     background-color: whitesmoke;
@@ -46,7 +47,7 @@ h2 {
     margin-top: 0;
     margin-bottom: 1.2rem;
     font-weight: 300;
-    color: grey;
+    color:rgb(180, 180, 180);
 }
 
 h3 {
@@ -60,13 +61,39 @@ p {
 }
 
 .muted {
-    /* color: rgb(195, 195, 195); */
     color: grey;
 }
 
 .hide {
     display: none !important;
 }
+
+.pos-r {
+    position: relative;
+}
+
+@media (hover:hover){
+    [data-tooltip]:hover::before {
+        content: attr(data-tooltip)'...'; 
+        position:absolute;
+        bottom:90%;
+        left: 50%;
+        display: block;
+        width: max-content;
+        padding: 0.3rem 0.8rem;
+        border-radius: 0.3em;
+        border: 1px dashed white;
+        color: white;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.8);
+        font-size: 1.1rem;
+        font-weight: 300;
+        letter-spacing: .5px;
+        font-family: var(--ff);
+        z-index: 2;
+    }
+}
+
 
 .app {
     max-width: 150rem;
@@ -122,6 +149,11 @@ p {
     min-width: 10px
 }
 
+.search input::placeholder {
+    opacity: 0.5;
+    color: white;
+}
+
 .search button {
     height: 3rem;
     width: 3rem;
@@ -168,6 +200,20 @@ p {
 
 .main-body-header .date {
     margin-left: 0.3rem;
+    display: inline-block;
+}
+
+.main-body-header > button {
+    border: 0;
+    outline: 0;
+    font-size: 1.9rem;
+    background-color: transparent;
+    cursor: pointer;
+    /* opacity: 0.7; */
+}
+
+.main-body-header > button > svg { 
+    fill: rgb(255, 153, 0);
 }
 
 .description {
@@ -182,7 +228,7 @@ p {
     top: 2rem;
     right: 0.5rem;
     opacity: 0.7;
-    transition: opacity 150ms linear;
+    transition: opacity 200ms linear;
 }
 
 .units:hover {
@@ -271,14 +317,41 @@ p {
     font-size: 1.5rem;
 }
 
-.forecast .card {
-    width: 200px;
-    flex-grow: 1;
-}
-
 .forecast em {
     font-style: normal;
     color: #a1a1a1;
+}
+
+.forecast .card {
+    width: 200px;
+    flex-grow: 1;
+    position: relative;
+}
+
+.forecast .card > button {
+    outline: none;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    border: 1.5px solid white;
+    background-color: transparent;
+    color: white;
+    border-radius: 50%;
+    height: 1.5rem;
+    width: 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 0 0.55rem 0;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: all 200ms linear;
+}
+
+.forecast .card button:hover { 
+    opacity: 1;
+    background-color: white;
+    color: black
 }
 
 .icon_small {

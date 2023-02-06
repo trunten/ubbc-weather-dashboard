@@ -3,7 +3,9 @@
 [Deployed Application](https://trunten.github.io/ubbc-weather-dashboard/)
 
 ## Credits
-- [Weather icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/weather)
+- Background images: [Unsplash.com](https://unsplash.com/)
+- Clip-path for compass needle: https://usefulangle.com/post/333/css-triangle
+
 
 ## Your Task
 

@@ -1,5 +1,27 @@
 const apiKey = "9360e4432a25de1431e1a190bc4aca95";
 const unsplashId = "_5uHOtETr7A0g87rXm5bnFFv8z-frUbW5u3Q9d8qeAk";
+const images = {
+    icon_01d: ["day-clear-sky.jpg"],
+    icon_02d: ["day-few-clouds.jpg"],
+    icon_03d: ["day-scattered-clouds.jpg"],
+    icon_04d: ["day-broken-clouds.jpg"],
+    icon_09d: ["day-shower-rain.jpg"],
+    icon_10d: ["day-rain.jpg"],
+    icon_11d: ["day-thunderstorm.jpg", "day-thunderstorm-2.jpg"],
+    icon_13d: ["day-snow.jpg", "day-snow-2.jpg"],
+    icon_50d: ["day-mist.jpg", "day-mist-2.jpg", "day-mist-3.jpg", "day-mist-4.jpg", "day-mist-5.jpg"],
+    icon_01n: ["night-clear-sky.jpg", "night-clear-sky.jpg"],
+    icon_02n: ["night-few-clouds.jpg", "night-few-clouds-2.jpg"],
+    icon_03n: ["night-scattered-clouds.jpg"],
+    icon_04n: ["night-broken-clouds.jpg", "night-broken-clouds-2.jpg"],
+    icon_09n: ["night-shower-rain.jpg"],
+    icon_10n: ["night-rain.jpg"],
+    icon_11n: ["night-thunderstorm.jpg", "night-thunderstorm-2.jpg", "night-thunderstorm-3.jpg"],
+    icon_13n: ["night-snow.jpg"],
+    icon_50n: ["night-mist.jpg", "night-mist-2.jpg", "night-mist-3.jpg"],
+    bg: ["bg-initial-1.jpg", "bg-initial-2.jpg", "bg-initial-3.jpg", "bg-initial-4.jpg", "bg-initial-5.jpg"],
+};
+
 let units, history;
 
 // Let's goooooo!
@@ -64,26 +86,39 @@ function parseWeather(data) {
     weather.dataset.wind_direction = deg;
     weather.dataset.icon = icon;
     updateCurrentWeather();
-    
+
     // 5 day forecast data from lat and lon of main location
-    const url = `https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=${lat}&lon=${lon}&appid=${apiKey}`
+    const url = `https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=${lat}&lon=${lon}&appid=${apiKey}`;
     fetch(url).then(res => res.json()).then(data => {
-        forecast = data.list.filter(item => item.dt_txt.includes("12:00"));
-        for (let i = 0; i < forecast.length; i++) {
-            const day = forecast[i];
+        const forecast = [];
+        const minmax = {};
+        const today = new Date().toLocaleDateString();
+        data.list.forEach((item) => {
+            let dt = new Date(item.dt * 1000);
+            item.dt = dt.toLocaleDateString();
+            if (item.dt !== today) {
+                if (!minmax[item.dt]) {
+                    minmax[item.dt] = { min: item.main.temp_min, max: item.main.temp_max };
+                } else {
+                    minmax[item.dt].min = Math.min(item.main.temp_min, minmax[item.dt].min);
+                    minmax[item.dt].max = Math.max(item.main.temp_max, minmax[item.dt].max);
+                }
+                if (dt.getHours() === 12) { forecast.push(item); }
+            }
+        })
+        if (forecast.length < 5) { forecast.push(data.list.pop()); }
+        forecast.forEach((day, i) => {
             const el = document.querySelector(".day" + (i + 1));
-            const dt = new Date(day.dt * 1000);
-            // console.log(dt.toLocaleDateString("en-gb", { weekday:"short", day:"numeric", month:"short"}));
-            el.dataset.date = dt.toLocaleDateString();
+            el.dataset.date = day.dt; 
             el.dataset.temp = day.main.temp;
-            el.dataset.temp_max = day.main.temp_max;
-            el.dataset.temp_min = day.main.temp_min;
+            el.dataset.temp_max = minmax[day.dt].max;
+            el.dataset.temp_min = minmax[day.dt].min;
             el.dataset.description = day.weather[0].description;
             el.dataset.humidity = day.main.humidity;
             el.dataset.wind = day.wind.speed;
             el.dataset.wind_direction = day.wind.deg;
             el.dataset.icon = day.weather[0].icon;
-        }
+        });
         updateForecast();
     });
 
@@ -98,7 +133,9 @@ function parseWeather(data) {
 
 function updateCurrentWeather(values) {
     const weather = document.querySelector(".main-body");
+    console.log(values, weather);
     if (!values) {
+        document.querySelector(".main-body-header > button").classList.add("hide");
         values = {
             name: weather.dataset.name,
             date: weather.dataset.date,
@@ -111,9 +148,11 @@ function updateCurrentWeather(values) {
             wind_direction: weather.dataset.wind_direction,
             icon: weather.dataset.icon,
         }
+    } else {
+        document.querySelector(".main-body-header > button").classList.remove("hide");
     }
 
-    weather.querySelector(".location").textContent = values.name;
+    weather.querySelector(".location").textContent = values.name || weather.dataset.name;
     weather.querySelector(".date").textContent = values.date;
     weather.querySelector(".temperature-current").textContent = getTemp(values.temp);
     weather.querySelector(".temperature-max span").textContent = getTemp(values.temp_max);
@@ -145,7 +184,7 @@ function fetchBackgroundImage(options) {
     .then(res => res.json())
     .then(data => {
         if (!data.errors) {
-            const img = new Image;
+            const img = new Image();
             const results = data.results;
             updateBG();
 
@@ -160,10 +199,10 @@ function fetchBackgroundImage(options) {
             }
 
             function loadImage() {
-                if ((img.width/img.height) == 1.5) {
+                if (true || (img.width/img.height) == 1.5) {
                     document.body.style.backgroundImage = `url(${img.src})`;    
                 } else {
-                    updateBG();
+                    // updateBG();
                 }
             }
         }
@@ -221,12 +260,29 @@ function updateTemperature(selectedUnits) {
 }
 
 function getTemp(temp, decimals = 1) {
-    temp = parseInt(temp);
+    temp = parseFloat(temp);
     if (units === "F") {
         temp = (temp * (9/5)) + 32;
     } 
     return temp.toFixed(decimals) + "°" + units;
 }
+
+function displayForecastDetail(e) {
+    const card = e.target.parentNode;
+    values = {
+        date: card.dataset.date,
+        temp: card.dataset.temp,
+        temp_max: card.dataset.temp_max,
+        temp_min: card.dataset.temp_min,
+        description: card.dataset.description,
+        humidity: card.dataset.humidity,
+        wind: card.dataset.wind,
+        wind_direction: card.dataset.wind_direction,
+        icon: card.dataset.icon,
+    }
+    updateCurrentWeather(values);
+}
+
 
 // init 
 function init() {
@@ -264,5 +320,11 @@ function init() {
             cel.checked = true;
             updateTemperature("c");
         }
+    });
+
+    document.querySelector(".main-body-header > button").addEventListener("click", ()=>updateCurrentWeather());
+
+    document.querySelectorAll(".forecast .card button").forEach(btn => {
+        btn.addEventListener("click", displayForecastDetail);
     });
 }
