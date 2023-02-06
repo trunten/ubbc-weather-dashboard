@@ -8,9 +8,9 @@ const images = {
     icon_09d: ["day-shower-rain.jpg"],
     icon_10d: ["day-rain.jpg"],
     icon_11d: ["day-thunderstorm.jpg", "day-thunderstorm-2.jpg"],
-    icon_13d: ["day-snow.jpg", "day-snow-2.jpg"],
+    icon_13d: ["day-snow.jpg", "day-snow-2.jpg", "day-snow-3.jpg"],
     icon_50d: ["day-mist.jpg", "day-mist-2.jpg", "day-mist-3.jpg", "day-mist-4.jpg", "day-mist-5.jpg"],
-    icon_01n: ["night-clear-sky.jpg", "night-clear-sky.jpg"],
+    icon_01n: ["night-clear-sky.jpg", "night-clear-sky-2.jpg"],
     icon_02n: ["night-few-clouds.jpg", "night-few-clouds-2.jpg"],
     icon_03n: ["night-scattered-clouds.jpg"],
     icon_04n: ["night-broken-clouds.jpg", "night-broken-clouds-2.jpg"],
@@ -128,7 +128,6 @@ function parseWeather(data) {
 
 function updateCurrentWeather(values) {
     const weather = document.querySelector(".main-body");
-    console.log(values, weather);
     if (!values) {
         document.querySelector(".main-body-header > button").classList.add("hide");
         values = {
@@ -174,49 +173,37 @@ function updateForecast() {
 }
 
 function fetchBackgroundImage(icon) {
+    const img = new Image();
+    let src;
     if (icon) {
         // Use local backgrounds
-        const backgrounds = images["icon_" + icon] || [];
+        const backgrounds = images["icon_" + icon];
         if (backgrounds) {
-            const src = "./assets/images/" + backgrounds[Math.floor(Math.random() * backgrounds.length)]
-            document.body.style.backgroundImage = `url(${src})`;
-            
-        }
+            src = "./assets/images/" + backgrounds[Math.floor(Math.random() * backgrounds.length)]
+        } 
     }
 
-    return;
+    // Just in case the api adds new icons at some point this will act as a fallback
+    if (!src) { 
+        const weather = document.querySelector(".main-body");
+        src = weather.dataset.name || "weather";
+        src = `https://source.unsplash.com/1600x900/?${src}`;
+    }
+
+    // Load the image before updating background
+    img.src = src;
+    if (img.complete || img.height > 0) {
+        loadImage();
+    } else {
+        img.onload = loadImage;
+    }
+
+    // Inner function to update background image once it has loaded
+    function loadImage() {
+        document.body.style.backgroundImage = `url(${img.src})`;    
+    }
     
-    // //Unsplash API (which is rubbish btw!)
-    // const name = options.name || "";
-    // const dayNight = options.dayNight || "";
-    // const description = options.description || "";
-    // fetch (`https://api.unsplash.com/search/photos?client_id=${unsplashId}&page=1&per_page=40&orientation=landscape&query=${name}+landmarks`)
-    // .then(res => res.json())
-    // .then(data => {
-    //     if (!data.errors) {
-    //         const img = new Image();
-    //         const results = data.results;
-    //         updateBG();
-
-    //         function updateBG() {
-    //             const src = results[Math.floor(Math.random() * results.length)].urls.regular;
-    //             img.src = src;
-    //             if (img.complete || img.height > 0) {
-    //                 loadImage();
-    //             } else {
-    //                 img.onload = loadImage;
-    //             }
-    //         }
-
-    //         function loadImage() {
-    //             if (true || (img.width/img.height) == 1.5) {
-    //                 document.body.style.backgroundImage = `url(${img.src})`;    
-    //             } else {
-    //                 // updateBG();
-    //             }
-    //         }
-    //     }
-    // })
+    
 }
 
 function search(e) {
@@ -337,4 +324,6 @@ function init() {
     document.querySelectorAll(".forecast .card button").forEach(btn => {
         btn.addEventListener("click", displayForecastDetail);
     });
+
 }
+
