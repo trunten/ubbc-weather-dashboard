@@ -1,5 +1,5 @@
 const apiKey = "9360e4432a25de1431e1a190bc4aca95";
-const unsplashId = "_5uHOtETr7A0g87rXm5bnFFv8z-frUbW5u3Q9d8qeAk";
+
 const images = {
     icon_01d: ["day-clear-sky.jpg"],
     icon_02d: ["day-few-clouds.jpg"],
