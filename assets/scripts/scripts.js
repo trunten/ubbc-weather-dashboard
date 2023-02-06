@@ -122,11 +122,6 @@ function parseWeather(data) {
         updateForecast();
     });
 
-    
-    // background image from unsplash api
-    const dayNight = icon.slice(-1)==="d" ? "" : "night";
-    fetchBackgroundImage({ name:name, dayNight: dayNight, description: description })
-
     document.querySelector(".app").classList.add("visible");
     document.querySelector(".app").classList.remove("invisible");
 }
@@ -162,6 +157,8 @@ function updateCurrentWeather(values) {
     weather.querySelector(".wind-speed span").textContent = values.wind;
     weather.querySelector(".wind-direction-arrow").style.setProperty('--direction', values.wind_direction + "deg");
     weather.querySelector(".icon").src = `https://openweathermap.org/img/wn/${values.icon}@2x.png`;
+
+    fetchBackgroundImage(values.icon);
 }
 
 function updateForecast() {
@@ -176,37 +173,50 @@ function updateForecast() {
     }
 }
 
-function fetchBackgroundImage(options) {
-    const name = options.name || "";
-    const dayNight = options.dayNight || "";
-    const description = options.description || "";
-    fetch (`https://api.unsplash.com/search/photos?client_id=${unsplashId}&page=1&per_page=40&orientation=landscape&query=${name}+landmarks`)
-    .then(res => res.json())
-    .then(data => {
-        if (!data.errors) {
-            const img = new Image();
-            const results = data.results;
-            updateBG();
-
-            function updateBG() {
-                const src = results[Math.floor(Math.random() * results.length)].urls.regular;
-                img.src = src;
-                if (img.complete || img.height > 0) {
-                    loadImage();
-                } else {
-                    img.onload = loadImage;
-                }
-            }
-
-            function loadImage() {
-                if (true || (img.width/img.height) == 1.5) {
-                    document.body.style.backgroundImage = `url(${img.src})`;    
-                } else {
-                    // updateBG();
-                }
-            }
+function fetchBackgroundImage(icon) {
+    if (icon) {
+        // Use local backgrounds
+        const backgrounds = images["icon_" + icon] || [];
+        if (backgrounds) {
+            const src = "./assets/images/" + backgrounds[Math.floor(Math.random() * backgrounds.length)]
+            document.body.style.backgroundImage = `url(${src})`;
+            
         }
-    })
+    }
+
+    return;
+    
+    // //Unsplash API (which is rubbish btw!)
+    // const name = options.name || "";
+    // const dayNight = options.dayNight || "";
+    // const description = options.description || "";
+    // fetch (`https://api.unsplash.com/search/photos?client_id=${unsplashId}&page=1&per_page=40&orientation=landscape&query=${name}+landmarks`)
+    // .then(res => res.json())
+    // .then(data => {
+    //     if (!data.errors) {
+    //         const img = new Image();
+    //         const results = data.results;
+    //         updateBG();
+
+    //         function updateBG() {
+    //             const src = results[Math.floor(Math.random() * results.length)].urls.regular;
+    //             img.src = src;
+    //             if (img.complete || img.height > 0) {
+    //                 loadImage();
+    //             } else {
+    //                 img.onload = loadImage;
+    //             }
+    //         }
+
+    //         function loadImage() {
+    //             if (true || (img.width/img.height) == 1.5) {
+    //                 document.body.style.backgroundImage = `url(${img.src})`;    
+    //             } else {
+    //                 // updateBG();
+    //             }
+    //         }
+    //     }
+    // })
 }
 
 function search(e) {
