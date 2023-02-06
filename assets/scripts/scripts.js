@@ -109,6 +109,7 @@ function parseWeather(data) {
         if (forecast.length < 5) { forecast.push(data.list.pop()); }
         forecast.forEach((day, i) => {
             const el = document.querySelector(".day" + (i + 1));
+            
             el.dataset.date = day.dt; 
             el.dataset.temp = day.main.temp;
             el.dataset.temp_max = minmax[day.dt].max;
@@ -117,7 +118,7 @@ function parseWeather(data) {
             el.dataset.humidity = day.main.humidity;
             el.dataset.wind = day.wind.speed;
             el.dataset.wind_direction = day.wind.deg;
-            el.dataset.icon = day.weather[0].icon;
+            el.dataset.icon = day.weather[0].icon.replace("n","d"); // For some reason it's sometimes returning night icons even at midday!!!
         });
         updateForecast();
     });
@@ -278,6 +279,7 @@ function displayForecastDetail(e) {
         icon: card.dataset.icon,
     }
     updateCurrentWeather(values);
+    window.scrollTo(0,0);
 }
 
 
