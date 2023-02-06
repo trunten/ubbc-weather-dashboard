@@ -210,7 +210,7 @@ function fetchBackgroundImage(icon) {
 function search(e) {
     if (e) { e.preventDefault(); }
     document.querySelector(".history").classList.remove("expanded");
-    let location = document.querySelector(".search input").value.trim() || "london";
+    let location = document.querySelector(".search input").value.trim(); // || "london";
     if (location) { getWeather(location) }
 }
 
