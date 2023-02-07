@@ -1,5 +1,10 @@
+// Global Variables
+//=================
+
+// API key for weather
 const apiKey = "9360e4432a25de1431e1a190bc4aca95";
 
+// Reference for available background images
 const images = {
     icon_01d: ["day-clear-sky.jpg"],
     icon_02d: ["day-few-clouds.jpg"],
@@ -27,7 +32,7 @@ let units, history;
 // Let's goooooo!
 init();
 
-
+// Gets weather data from API for searched location
 function getWeather (location) {
     // Bizzarely, using geolocation + lat/lon was more unreliable than using a query.
     // Eg, searching for Tokyo returned a location lat/lon that reported as "Japan" when getting the forecast data.
@@ -62,6 +67,7 @@ function getWeather (location) {
   
 }
 
+// Parses all the weather data to pull out the required values
 function parseWeather(data) {
     if (data.message) {
         alert(data.message);
@@ -77,8 +83,6 @@ function parseWeather(data) {
     const today = new Date(data.dt * 1000);
     today.setHours(today.getHours() + timezoneOffset);
     const localDate = new Date(today.toUTCString().replace("GMT","")).toLocaleDateString(); // Current date for searched city but in user-local time format
-
-    console.log(data, today);
     
     const name = data.name;
     const { main, description, icon } = data.weather[0];
@@ -105,21 +109,41 @@ function parseWeather(data) {
         const forecast = [];
         const minmax = {};
         data.list.forEach((item) => {
+            // Get date from the list item in GMT
             let dt = new Date(item.dt * 1000); 
+
+            // Change GMT date based on location timezone
             dt.setHours(dt.getHours() + timezoneOffset);
+
+            // This is not actually the true time anywhere, just allows me to
+            // format the date in the user-local format and get the hour of the
+            // item as if I was living in the searched locaiton.
             dt = new Date(dt.toUTCString().replace("GMT",""))
+
+            // Set the dt value in the item to this new date string so I can ignore the
+            // current day (again, the current day as if I was living in the searched location)
             item.dt = dt.toLocaleDateString();
+
+            // Ignore today, got that already
             if (item.dt !== localDate) {
+                // Store the max and min temperature for this 3 hour period so 
+                // I can then get the day's overall max / min
                 if (!minmax[item.dt]) {
                     minmax[item.dt] = { min: item.main.temp_min, max: item.main.temp_max };
                 } else {
                     minmax[item.dt].min = Math.min(item.main.temp_min, minmax[item.dt].min);
                     minmax[item.dt].max = Math.max(item.main.temp_max, minmax[item.dt].max);
                 }
+                // If the timestamp for this item is the middle of the day use this as the 
+                // reference for the temperature, wind, etc.
                 if (dt.getHours() >= 12 && dt.getHours() < 15) { forecast.push(item); }
             }
         })
+        // If it's still before noon in the searched location we won't have an item for midday.
+        // In this instance just get the latest time available for the reference period.
         if (forecast.length < 5) { forecast.push(data.list.pop()); }
+
+        // Set dataset values for the card (I output later. Need values stored for "more info" button)
         forecast.forEach((day, i) => {
             const el = document.querySelector(".day" + (i + 1));
             el.dataset.date = day.dt; 
@@ -132,13 +156,19 @@ function parseWeather(data) {
             el.dataset.wind_direction = day.wind.deg;
             el.dataset.icon = day.weather[0].icon.replace("n","d"); // For some reason it's sometimes returning night icons even at midday!!!
         });
+
+        // Output the save value to the html doc
         updateForecast();
     });
 
+    // Shows the whole UI if this is the first search.
     document.querySelector(".app").classList.add("visible");
     document.querySelector(".app").classList.remove("invisible");
 }
 
+// Renders the saved values for the current weather to the screen.
+// Optionally allows values to be passed that will get used instead - this
+// is for the the "more info" button on the forecast cards.
 function updateCurrentWeather(values) {
     const weather = document.querySelector(".main-body");
     if (!values) {
@@ -170,9 +200,11 @@ function updateCurrentWeather(values) {
     weather.querySelector(".wind-direction-arrow").style.setProperty('--direction', values.wind_direction + "deg");
     weather.querySelector(".icon").src = `https://openweathermap.org/img/wn/${values.icon}@2x.png`;
 
+    // Update background image to reflect weather conditions
     fetchBackgroundImage(values.icon);
 }
 
+// Renders the saved values for each forecast "card" to the screen.
 function updateForecast() {
     const forecast = document.querySelectorAll(".forecast .card");
     for (let day of forecast) {
@@ -185,6 +217,7 @@ function updateForecast() {
     }
 }
 
+// Get's a background image from my background assets based on weather conditions.
 function fetchBackgroundImage(icon) {
     const img = new Image();
     let src;
@@ -197,6 +230,7 @@ function fetchBackgroundImage(icon) {
     }
 
     // Just in case the api adds new icons at some point this will act as a fallback
+    // (pulls a random image from unsplash using the location name)
     if (!src) { 
         const weather = document.querySelector(".main-body");
         src = weather.dataset.name || "weather";
@@ -219,6 +253,7 @@ function fetchBackgroundImage(icon) {
     
 }
 
+// Checks to see if a value has been entered then passes lcation on to getWeather to query API
 function search(e) {
     if (e) { e.preventDefault(); }
     document.querySelector(".history").classList.remove("expanded");
@@ -226,6 +261,8 @@ function search(e) {
     if (location) { getWeather(location) }
 }
 
+// Adds searched location to history if it's not there already. Moves locaiton
+// to the top if it is there already.
 function addToSearchHistory(name, country, lat, lon) {
     if (name && name.trim() && lat && lon) {
         history.forEach((item, i) => {
@@ -237,9 +274,14 @@ function addToSearchHistory(name, country, lat, lon) {
         history.unshift(location)
         localStorage.setItem("searches", JSON.stringify(history))
     }
+
+    // Wait a bit unti render so that the history pain can collapse fully if it was expanded.
     setTimeout(renderSearchHistory, 1000);
 }
 
+// Renders pervious searches to the screen. Limited to 10 because it was starting to get a bit
+// excessive when outputting litterally every search ever made. I still keep this extra info though
+// just inc ase I decide to add more later or let the user control the list length.
 function renderSearchHistory() {
     const searches = document.querySelector(".searches");
     searches.textContent = "";
@@ -255,6 +297,7 @@ function renderSearchHistory() {
     }
 }
 
+// Updates the temperature to display in the user preferred format (celcius or fahrenheit).
 function updateTemperature(selectedUnits) {
     units = (selectedUnits.toUpperCase() === "F") ? "F" : "C";
     localStorage.setItem("units", units);
@@ -269,6 +312,7 @@ function updateTemperature(selectedUnits) {
     }
 }
 
+// Returns the temperature in the user preferred format (celcius or fahrenheit) based on a celcius input.
 function getTemp(temp, decimals = 1) {
     temp = parseFloat(temp);
     if (units === "F") {
@@ -277,6 +321,7 @@ function getTemp(temp, decimals = 1) {
     return temp.toFixed(decimals) + "°" + units;
 }
 
+// Pushes the forecast data to the main panel when the "more info" button is clicked.
 function displayForecastDetail(e) {
     const card = e.target.parentNode;
     values = {
@@ -295,19 +340,22 @@ function displayForecastDetail(e) {
 }
 
 
-// init 
+// Initialise 
 function init() {
+    // Get user saved temperature units from local storage
     units = localStorage.getItem("units") || "C";
     if (units === "F") {
         document.querySelector("#fahrenheit").checked = true;
     }
 
+    // Get search history from local storage
     history = JSON.parse(localStorage.getItem("searches")) || [];
     if (history.length) {
         if (!history[0].lat) history = [];
     }
     renderSearchHistory();
 
+    // Add event listeners
     document.querySelector(".search button").addEventListener("click", search);
     document.querySelector(".search input").addEventListener("keyup", function(e) {
         if (e.key === "Enter") { search(e); }
