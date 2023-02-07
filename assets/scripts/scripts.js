@@ -67,8 +67,20 @@ function parseWeather(data) {
         alert(data.message);
         return;
     } 
+
+    // I need the date to display as the local date for the city searched for.
+    // data.dt will be the time at GMT 0 so to format that as if I lived in the reference city I must first
+    // change the hourse by the timezone offset, then turn that back to a date (which will technically be
+    // invalid) just so I can then output the date in the format that is customary to the end user.
+    // Definitely should just use moment.js or similar but just wnat to see if I can wrangle dates in JS 🤣
+    const timezoneOffset = data.timezone / 3600;
+    const today = new Date(data.dt * 1000);
+    today.setHours(today.getHours() + timezoneOffset);
+    const localDate = new Date(today.toUTCString().replace("GMT","")).toLocaleDateString(); // Current date for searched city but in user-local time format
+
+    console.log(data, today);
+    
     const name = data.name;
-    let dt = new Date(data.dt * 1000);
     const { main, description, icon } = data.weather[0];
     const { temp, temp_min, temp_max, humidity } = data.main;
     const { speed, deg } = data.wind;
@@ -76,7 +88,7 @@ function parseWeather(data) {
     addToSearchHistory(name, data.sys.country, lat, lon);
     const weather = document.querySelector(".main-body");
     weather.dataset.name = name;
-    weather.dataset.date = dt.toLocaleDateString();
+    weather.dataset.date = localDate;
     weather.dataset.temp = temp;
     weather.dataset.temp_max = temp_max; 
     weather.dataset.temp_min = temp_min; 
@@ -92,24 +104,24 @@ function parseWeather(data) {
     fetch(url).then(res => res.json()).then(data => {
         const forecast = [];
         const minmax = {};
-        const today = new Date().toLocaleDateString();
         data.list.forEach((item) => {
-            let dt = new Date(item.dt * 1000);
+            let dt = new Date(item.dt * 1000); 
+            dt.setHours(dt.getHours() + timezoneOffset);
+            dt = new Date(dt.toUTCString().replace("GMT",""))
             item.dt = dt.toLocaleDateString();
-            if (item.dt !== today) {
+            if (item.dt !== localDate) {
                 if (!minmax[item.dt]) {
                     minmax[item.dt] = { min: item.main.temp_min, max: item.main.temp_max };
                 } else {
                     minmax[item.dt].min = Math.min(item.main.temp_min, minmax[item.dt].min);
                     minmax[item.dt].max = Math.max(item.main.temp_max, minmax[item.dt].max);
                 }
-                if (dt.getHours() === 12) { forecast.push(item); }
+                if (dt.getHours() >= 12 && dt.getHours() < 15) { forecast.push(item); }
             }
         })
         if (forecast.length < 5) { forecast.push(data.list.pop()); }
         forecast.forEach((day, i) => {
             const el = document.querySelector(".day" + (i + 1));
-            
             el.dataset.date = day.dt; 
             el.dataset.temp = day.main.temp;
             el.dataset.temp_max = minmax[day.dt].max;
@@ -210,7 +222,7 @@ function fetchBackgroundImage(icon) {
 function search(e) {
     if (e) { e.preventDefault(); }
     document.querySelector(".history").classList.remove("expanded");
-    let location = document.querySelector(".search input").value.trim(); // || "london";
+    let location = document.querySelector(".search input").value.trim() || "london";
     if (location) { getWeather(location) }
 }
 
