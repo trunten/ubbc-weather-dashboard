@@ -54,6 +54,7 @@ N/A
   - Weather information for these cities can be fetched again by clicking on the relevant link in the history pane.
 - View more detailed information for any of the 5 future forecast days by clicking the "i" symbol in the top right of the future forecast cards.
   - Revert the main display back to today's weather information by clickin the back arrow next to the date (only appears if viewing a day in the future).
+- **Application note:** Dates & times are local to the searched location. eg. Searching for a location that is in a timezone where it is already today or still yesterday then the reported dates will reflect this fact.
 
 
 Application screenshots:
