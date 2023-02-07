@@ -57,11 +57,11 @@ N/A
 
 
 Application screenshots:
- ![App Screenshot 1](./assets/images/app-screenshot-1.png)
+ [![App Screenshot 1](./assets/images/app-screenshot-1.png)](https://trunten.github.io/ubbc-weather-dashboard/)
 
- ![App Screenshot 2](./assets/images/app-screenshot-2.png)
+ [![App Screenshot 2](./assets/images/app-screenshot-2.png)](https://trunten.github.io/ubbc-weather-dashboard/)
 
- ![App Screenshot 3](./assets/images/app-screenshot-3.png)
+ [![App Screenshot 3](./assets/images/app-screenshot-3.png)](https://trunten.github.io/ubbc-weather-dashboard/)
 
 ## Credits
 - Background images: [Unsplash.com](https://unsplash.com/)
