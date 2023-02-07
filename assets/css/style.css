@@ -101,6 +101,8 @@ p {
         letter-spacing: .5px;
         font-family: var(--ff);
         z-index: 2;
+        opacity: 0;
+        animation: forwards 1s fadeIn;
     }
 }
 
