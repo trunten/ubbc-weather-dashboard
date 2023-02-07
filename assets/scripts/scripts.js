@@ -55,7 +55,7 @@ function getWeather (location) {
     //                 url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${lon}&appid=${apiKey}`
     //                 fetch(url).then(res => res.json()).then(data => parseWeather(data));
     //             } else {
-    //                 alert("Country/city not found");
+    //                 showAlert("Country/city not found");
     //             }
     //         });   
     // }
@@ -70,7 +70,7 @@ function getWeather (location) {
 // Parses all the weather data to pull out the required values
 function parseWeather(data) {
     if (data.message) {
-        alert(data.message);
+        showAlert(data.message);
         return;
     } 
 
@@ -143,7 +143,7 @@ function parseWeather(data) {
         // In this instance just get the latest time available for the reference period.
         if (forecast.length < 5) { forecast.push(data.list.pop()); }
 
-        // Set dataset values for the card (I output later. Need values stored for "more info" button)
+        // Set dataset values for the card (I output later. Need values stored for "more detail" button)
         forecast.forEach((day, i) => {
             const el = document.querySelector(".day" + (i + 1));
             el.dataset.date = day.dt; 
@@ -168,7 +168,7 @@ function parseWeather(data) {
 
 // Renders the saved values for the current weather to the screen.
 // Optionally allows values to be passed that will get used instead - this
-// is for the the "more info" button on the forecast cards.
+// is for the the "more detail" button on the forecast cards.
 function updateCurrentWeather(values) {
     const weather = document.querySelector(".main-body");
     if (!values) {
@@ -321,7 +321,7 @@ function getTemp(temp, decimals = 1) {
     return temp.toFixed(decimals) + "°" + units;
 }
 
-// Pushes the forecast data to the main panel when the "more info" button is clicked.
+// Pushes the forecast data to the main panel when the "more detail" button is clicked.
 function displayForecastDetail(e) {
     const card = e.target.parentNode;
     values = {
@@ -339,6 +339,12 @@ function displayForecastDetail(e) {
     window.scrollTo(0,0);
 }
 
+// Shows a modal alert
+function showAlert(message) {
+    if (!message || !message.trim()) { message = "Alert!" }
+    document.querySelector("#alertMessage").textContent = message;
+    document.querySelector("#alert").showModal();
+}
 
 // Initialise 
 function init() {
@@ -356,6 +362,8 @@ function init() {
     renderSearchHistory();
 
     // Add event listeners
+    document.querySelector("#alert").addEventListener("click", e => document.querySelector("#alert").close() );
+
     document.querySelector(".search button").addEventListener("click", search);
     document.querySelector(".search input").addEventListener("keyup", function(e) {
         if (e.key === "Enter") { search(e); }
