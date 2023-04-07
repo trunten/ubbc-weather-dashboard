@@ -236,11 +236,18 @@ p {
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    position: absolute;
-    top: 2rem;
-    right: 0.5rem;
     opacity: 0.7;
     transition: opacity 200ms linear;
+}
+
+.units:first-of-type {
+  position: absolute;
+  top: 2rem;
+  right: 0.5rem;
+}
+
+.units:last-of-type {
+  gap: 0.5rem;
 }
 
 .units:hover {
@@ -256,7 +263,7 @@ p {
     display: none;
 }
 
-.units-toggle {
+.temp-toggle, .speed-toggle {
     padding: 0.3rem;
     border: 1.5px solid white;
     border-radius: 100vmax;
@@ -267,7 +274,7 @@ p {
     cursor: pointer;
 }
 
-.units-toggle::after {
+.temp-toggle::after, .speed-toggle::after {
     content: "";
     display: block;
     height: 1rem;
@@ -278,7 +285,11 @@ p {
     transition: margin 150ms linear;
 }
 
-#celcius:checked ~ .units-toggle::after {
+#celcius:checked ~ .temp-toggle::after {
+    margin-left: 0;
+}
+
+#kmh:checked ~ .speed-toggle::after {
     margin-left: 0;
 }
 

@@ -196,7 +196,7 @@ function updateCurrentWeather(values) {
     weather.querySelector(".temperature-min span").textContent = getTemp(values.temp_min);
     weather.querySelector(".description").textContent = values.description;
     weather.querySelector(".humidity span").textContent = values.humidity;
-    weather.querySelector(".wind-speed span").textContent = values.wind;
+    weather.querySelector(".wind-speed span").textContent = (values.wind * speedFactor()).toFixed(2) + " " + units.speed;
     weather.querySelector(".wind-direction-arrow").style.setProperty('--direction', values.wind_direction + "deg");
     weather.querySelector(".icon").src = `https://openweathermap.org/img/wn/${values.icon}@2x.png`;
 
@@ -212,7 +212,7 @@ function updateForecast() {
         day.querySelector(`.description`).textContent = day.dataset.description;
         day.querySelector(`.temp span`).textContent = getTemp(day.dataset.temp);
         day.querySelector(`.humidity span`).textContent = day.dataset.humidity;
-        day.querySelector(`.wind span`).textContent = day.dataset.wind;
+        day.querySelector(`.wind span`).textContent = (day.dataset.wind * speedFactor()).toFixed(2) + " " + units.speed;
         day.querySelector(".icon_small").src = `https://openweathermap.org/img/wn/${day.dataset.icon}.png`;
     }
 }
@@ -299,8 +299,8 @@ function renderSearchHistory() {
 
 // Updates the temperature to display in the user preferred format (celcius or fahrenheit).
 function updateTemperature(selectedUnits) {
-    units = (selectedUnits.toUpperCase() === "F") ? "F" : "C";
-    localStorage.setItem("units", units);
+    units.temp = (selectedUnits.toUpperCase() === "F") ? "F" : "C";
+    localStorage.setItem("units", JSON.stringify(units));
     const cards = document.querySelectorAll(".card");
     for (let card of cards) {
         const minmax = !!card.querySelector(".temperature-max");
@@ -315,10 +315,26 @@ function updateTemperature(selectedUnits) {
 // Returns the temperature in the user preferred format (celcius or fahrenheit) based on a celcius input.
 function getTemp(temp, decimals = 1) {
     temp = parseFloat(temp);
-    if (units === "F") {
+    if (units.temp === "F") {
         temp = (temp * (9/5)) + 32;
     } 
-    return temp.toFixed(decimals) + "°" + units;
+    return temp.toFixed(decimals) + "°" + units.temp;
+}
+
+// Works out mph or km/h multiplier depeding on user selection
+function speedFactor() {
+  if (units.speed === "mph") return 2.23694;
+  return 3.6;
+}
+
+function updateSpeed(speed) {
+  units.speed = speed;
+  localStorage.setItem("units", JSON.stringify(units));
+  const cards = document.querySelectorAll(".card");
+  for (let card of cards) {
+      const minmax = !!card.querySelector(".temperature-max");
+      card.querySelector(minmax ? ".wind-speed span" : ".wind span").textContent = (card.dataset.wind * speedFactor()).toFixed(2) + " " + units.speed;
+  }
 }
 
 // Pushes the forecast data to the main panel when the "more detail" button is clicked.
@@ -349,10 +365,13 @@ function showAlert(message) {
 // Initialise 
 function init() {
     // Get user saved temperature units from local storage
-    units = localStorage.getItem("units") || "C";
-    if (units === "F") {
+    units = JSON.parse(localStorage.getItem("units")) || {temp:"C", speed:"km/h"};
+    if (units.temp === "F") {
         document.querySelector("#fahrenheit").checked = true;
     }
+    if (units.speed === "mph") {
+      document.querySelector("#mph").checked = true;
+  }
 
     // Get search history from local storage
     history = JSON.parse(localStorage.getItem("searches")) || [];
@@ -377,16 +396,39 @@ function init() {
         }
     });
 
-    document.querySelector(".units-toggle").addEventListener("click", function() {
-        const cel = document.querySelector("#celcius");
-        const fah = document.querySelector("#fahrenheit");
-        if (cel.checked) {
-            fah.checked = true;
+    document.querySelector(".temp-toggle").addEventListener("click", function() {
+        const left = document.querySelector("#celcius");
+        const right = document.querySelector("#fahrenheit");
+        if (left.checked) {
+            right.checked = true;
             updateTemperature("f");
         } else {
-            cel.checked = true;
+            left.checked = true;
             updateTemperature("c");
         }
+    });
+
+    document.querySelector(".speed-toggle").addEventListener("click", function() {
+      const left = document.querySelector("#kmh");
+      const right = document.querySelector("#mph");
+      if (left.checked) {
+          right.checked = true;
+          updateSpeed("mph");
+      } else {
+          left.checked = true;
+          updateSpeed("km/h");
+      }
+
+    });
+
+    document.querySelectorAll(".units label").forEach(el => {
+      el.addEventListener("click", function() {
+        if (el.dataset.temp) {
+          updateTemperature(el.dataset.temp);
+        } else {
+          updateSpeed(el.dataset.speed);
+        }
+      });
     });
 
     document.querySelector(".main-body-header > button").addEventListener("click", ()=>updateCurrentWeather());
