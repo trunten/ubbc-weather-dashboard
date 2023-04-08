@@ -27,7 +27,7 @@ const images = {
     bg: ["bg-initial-1.jpg", "bg-initial-2.jpg", "bg-initial-3.jpg", "bg-initial-4.jpg", "bg-initial-5.jpg"],
 };
 
-let units, history;
+let units, history, currentFocus;
 
 // Let's goooooo!
 init();
@@ -185,8 +185,10 @@ function updateCurrentWeather(values) {
             wind_direction: weather.dataset.wind_direction,
             icon: weather.dataset.icon,
         }
+        currentFocus = null;
     } else {
         document.querySelector(".main-body-header > button").classList.remove("hide");
+        currentFocus = values;
     }
 
     weather.querySelector(".location").textContent = values.name || weather.dataset.name;
@@ -303,11 +305,11 @@ function updateTemperature(selectedUnits) {
     localStorage.setItem("units", JSON.stringify(units));
     const cards = document.querySelectorAll(".card");
     for (let card of cards) {
-        const minmax = !!card.querySelector(".temperature-max");
-        card.querySelector(minmax ? ".temperature-current" : ".temp span").textContent = getTemp(card.dataset.temp);
-        if (minmax) {
-            card.querySelector(".temperature-max span").textContent = getTemp(card.dataset.temp_max);
-            card.querySelector(".temperature-min span").textContent = getTemp(card.dataset.temp_min);
+        const isMainCard = !!card.querySelector(".temperature-max");
+        card.querySelector(isMainCard ? ".temperature-current" : ".temp span").textContent = getTemp(currentFocus?.temp || card.dataset.temp);
+        if (isMainCard) {
+            card.querySelector(".temperature-max span").textContent = getTemp(currentFocus?.temp_max || card.dataset.temp_max);
+            card.querySelector(".temperature-min span").textContent = getTemp(currentFocus?.temp_min || card.dataset.temp_min);
         }
     }
 }
@@ -332,8 +334,9 @@ function updateSpeed(speed) {
   localStorage.setItem("units", JSON.stringify(units));
   const cards = document.querySelectorAll(".card");
   for (let card of cards) {
-      const minmax = !!card.querySelector(".temperature-max");
-      card.querySelector(minmax ? ".wind-speed span" : ".wind span").textContent = (card.dataset.wind * speedFactor()).toFixed(2) + " " + units.speed;
+      const isMainCard = !!card.querySelector(".temperature-max");
+      const wind = (isMainCard && currentFocus) ? currentFocus.wind : card.dataset.wind;
+      card.querySelector(isMainCard ? ".wind-speed span" : ".wind span").textContent = (wind * speedFactor()).toFixed(2) + " " + units.speed;
   }
 }
 
