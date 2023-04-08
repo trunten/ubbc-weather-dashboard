@@ -365,13 +365,18 @@ function showAlert(message) {
 // Initialise 
 function init() {
     // Get user saved temperature units from local storage
-    units = JSON.parse(localStorage.getItem("units")) || {temp:"C", speed:"km/h"};
+    try {
+      units = JSON.parse(localStorage.getItem("units"));
+      if (typeof units === 'string' || units instanceof String) { units = {temp:"C", speed:"km/h"}; }
+    } catch {
+      units = {temp:"C", speed:"km/h"};
+    }
     if (units.temp === "F") {
         document.querySelector("#fahrenheit").checked = true;
     }
     if (units.speed === "mph") {
       document.querySelector("#mph").checked = true;
-  }
+    }
 
     // Get search history from local storage
     history = JSON.parse(localStorage.getItem("searches")) || [];
