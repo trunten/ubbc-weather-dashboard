@@ -317,7 +317,7 @@ function updateTemperature(selectedUnits) {
 // Returns the temperature in the user preferred format (celcius or fahrenheit) based on a celcius input.
 function getTemp(temp, decimals = 1) {
     temp = parseFloat(temp);
-    if (units.temp === "F") {
+    if (units && units.temp === "F") {
         temp = (temp * (9/5)) + 32;
     } 
     return temp.toFixed(decimals) + "°" + units.temp;
@@ -325,7 +325,7 @@ function getTemp(temp, decimals = 1) {
 
 // Works out mph or km/h multiplier depeding on user selection
 function speedFactor() {
-  if (units.speed === "mph") return 2.23694;
+  if (units && units.speed === "mph") return 2.23694;
   return 3.6;
 }
 
@@ -374,6 +374,7 @@ function init() {
     } catch {
       units = {temp:"C", speed:"km/h"};
     }
+    if (!units) { units = {temp:"C", speed:"km/h"}; }
     if (units.temp === "F") {
         document.querySelector("#fahrenheit").checked = true;
     }
