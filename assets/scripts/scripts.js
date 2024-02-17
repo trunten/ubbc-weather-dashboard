@@ -204,6 +204,7 @@ function updateCurrentWeather(values) {
 
     // Update background image to reflect weather conditions
     fetchBackgroundImage(values.icon);
+    window.scrollTo(0,0);
 }
 
 // Renders the saved values for each forecast "card" to the screen.
