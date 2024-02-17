@@ -82,7 +82,7 @@ function parseWeather(data) {
     const timezoneOffset = data.timezone / 3600;
     const today = new Date(data.dt * 1000);
     today.setHours(today.getHours() + timezoneOffset);
-    const localDate = new Date(today.toUTCString().replace("GMT","")).toLocaleDateString(); // Current date for searched city but in user-local time format
+    const localDate =  today.toISOString().substring(0,10); //new Date(today.toUTCString().replace("GMT","")).toLocaleDateString(); // Current date for searched city but in user-local time format
     
     const name = data.name;
     const { main, description, icon } = data.weather[0];
@@ -122,8 +122,8 @@ function parseWeather(data) {
 
             // Set the dt value in the item to this new date string so I can ignore the
             // current day (again, the current day as if I was living in the searched location)
-            item.dt = dt.toLocaleDateString();
-
+            item.dt =  dt.toISOString().substring(0,10); //dt.toLocaleDateString();
+        
             // Ignore today, got that already
             if (item.dt !== localDate) {
                 // Store the max and min temperature for this 3 hour period so 
@@ -192,7 +192,7 @@ function updateCurrentWeather(values) {
     }
 
     weather.querySelector(".location").textContent = values.name || weather.dataset.name;
-    weather.querySelector(".date").textContent = values.date;
+    weather.querySelector(".date").textContent = new Date(values.date).toLocaleDateString(undefined, {weekday: "long", day:"numeric", month: "long", year: "numeric"});
     weather.querySelector(".temperature-current").textContent = getTemp(values.temp);
     weather.querySelector(".temperature-max span").textContent = getTemp(values.temp_max);
     weather.querySelector(".temperature-min span").textContent = getTemp(values.temp_min);
@@ -210,7 +210,7 @@ function updateCurrentWeather(values) {
 function updateForecast() {
     const forecast = document.querySelectorAll(".forecast .card");
     for (let day of forecast) {
-        day.querySelector(`.date`).textContent = day.dataset.date;
+        day.querySelector(`.date`).textContent = new Date(day.dataset.date).toLocaleDateString(undefined, {weekday: "short", day:"2-digit", month: "2-digit", year: "numeric"}).replace(',','');
         day.querySelector(`.description`).textContent = day.dataset.description;
         day.querySelector(`.temp span`).textContent = getTemp(day.dataset.temp);
         day.querySelector(`.humidity span`).textContent = day.dataset.humidity;
@@ -263,6 +263,14 @@ function search(e) {
     if (location) { getWeather(location) }
 }
 
+// Clears search history
+function clearSearchHistory() {
+  localStorage.setItem("searches", "[]");
+  history= [];
+  // Wait a bit unti render so that the history pain can collapse fully if it was expanded.
+  setTimeout(renderSearchHistory, 1000);
+}
+
 // Adds searched location to history if it's not there already. Moves locaiton
 // to the top if it is there already.
 function addToSearchHistory(name, country, lat, lon) {
@@ -287,15 +295,20 @@ function addToSearchHistory(name, country, lat, lon) {
 function renderSearchHistory() {
     const searches = document.querySelector(".searches");
     searches.textContent = "";
-    for (let i = 0; i < Math.min(10, history.length); i++) {
-        const location = history[i];
-        const a = document.createElement("a")
-        a.href = "#";
-        a.textContent = location.name;
-        a.dataset.location = location.name;
-        // a.dataset.lat = location.lat;
-        // a.dataset.lon = location.lon;
-        searches.appendChild(a);
+    if (history.length > 0) {
+      for (let i = 0; i < Math.min(10, history.length); i++) {
+          const location = history[i];
+          const a = document.createElement("a")
+          a.href = "#";
+          a.textContent = location.name;
+          a.dataset.location = location.name;
+          // a.dataset.lat = location.lat;
+          // a.dataset.lon = location.lon;
+          searches.appendChild(a);
+      }
+      document.getElementById("clear").style.display = "";
+    } else {
+      document.getElementById("clear").style.display = "none";
     }
 }
 
@@ -392,6 +405,8 @@ function init() {
     // Add event listeners
     document.querySelector("#alert").addEventListener("click", e => document.querySelector("#alert").close() );
 
+    document.querySelector("#clear").addEventListener("click", clearSearchHistory);
+
     document.querySelector(".search button").addEventListener("click", search);
     document.querySelector(".search input").addEventListener("keyup", function(e) {
         if (e.key === "Enter") { search(e); }
@@ -402,6 +417,8 @@ function init() {
         if (e.target.dataset.location) {
             document.querySelector(".search input").value = e.target.dataset.location
             search(e);
+        } else if (e.target.id === "clear") {
+            clearSearchHistory();
         }
     });
 
